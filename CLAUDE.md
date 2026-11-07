@@ -31,6 +31,34 @@ Vue 3.5, Vue Router (hash history), Vite, TypeScript, Vitest + Vue Test Utils (j
 - Small, single-purpose components. No new dependencies without a stated reason.
 - `@` aliases `src/`.
 
+## Project structure
+```
+.github/workflows/deploy.yml   Pages deploy (lint, test, build, deploy)
+public/                        Static files copied as-is (favicon.ico)
+index.html                     Vite entry HTML
+src/
+  main.ts                      App bootstrap (creates app, installs router)
+  App.vue                      Root component
+  router/index.ts              Routes (hash history)
+  views/                       One component per route (HomeView, AboutView)
+  components/                  Reusable components
+    __tests__/                 Unit tests, *.spec.ts, next to the code they cover
+    icons/                     Scaffold placeholder icons (likely to be removed)
+  assets/                      base.css, main.css (scaffold global styles), logo.svg
+  data/                        (planned) typed personal content
+  styles/tokens.css            (planned) light/dark CSS variables
+env.d.ts                       Vite client types
+vite.config.ts                 Vite config (base path, `@` alias)
+vitest.config.ts               Vitest config (jsdom)
+eslint.config.ts, .oxlintrc.json, .prettierrc.json   Lint and format config
+tsconfig.json                  Solution file that references the three below
+  tsconfig.app.json            App code in src/ (excludes tests)
+  tsconfig.vitest.json         Test files
+  tsconfig.node.json           Config files (vite, vitest, eslint)
+```
+- Put new unit tests in a `__tests__/` folder beside the code, named `<Name>.spec.ts`.
+- Anything marked "(planned)" does not exist yet; create it when first needed rather than assuming it is there.
+
 ## Design principles
 - Mobile-first, responsive, light/dark via CSS variables in `src/styles/tokens.css` (to be created).
 - Accessible by default: semantic HTML, keyboard nav, visible focus, AA contrast, respect `prefers-reduced-motion`.
