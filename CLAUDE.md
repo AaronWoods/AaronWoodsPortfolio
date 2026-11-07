@@ -21,7 +21,7 @@ Vue 3.5, Vue Router (hash history), Vite, TypeScript, Vitest + Vue Test Utils (j
 - Static only. No server code, no secrets.
 - `base` in `vite.config.ts` is `/AaronWoodsPortfolio/`. Use `import.meta.env.BASE_URL` for asset paths, never absolute `/…` URLs.
 - Router uses `createWebHashHistory` so deep links work without server rewrites.
-- Deployed via GitHub Actions (workflow not yet added). Never commit `dist/`.
+- Deployed via GitHub Actions (`.github/workflows/deploy.yml`: lint, test, build, then deploy on push to `main`). Pages source must be set to "GitHub Actions" in repo settings. Never commit `dist/`.
 
 ## Architecture
 - Entry: `src/main.ts`; routes in `src/router/index.ts`; pages in `src/views/`; reusable pieces in `src/components/`.
