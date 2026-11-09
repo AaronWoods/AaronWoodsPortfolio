@@ -5,7 +5,7 @@ Personal portfolio site (social links, work history, education). Vue 3 + Vite + 
 ## Commands
 - `npm install` – uses `.npmrc` (`legacy-peer-deps=true`) because npm 10 crashes resolving vitest's peer tree without it
 - `npm run dev` – local dev server
-- `npm run build` – type-check + production build (must pass before any PR)
+- `npm run build` – type-check + production build with `vite-ssg build`, which prerenders every route to static HTML in `dist/` (must pass before any PR)
 - `npm run preview` – serve the built `dist/` locally
 - `npm run type-check` – `vue-tsc --build`
 - `npm run lint` – oxlint then ESLint, both with `--fix`
@@ -15,12 +15,13 @@ Personal portfolio site (social links, work history, education). Vue 3 + Vite + 
 - Node: `^22.18.0 || >=24.12.0` (see `engines` in `package.json`)
 
 ## Stack
-Vue 3.5, Vue Router (hash history), Vite, TypeScript, Vitest + Vue Test Utils (jsdom), ESLint + oxlint, Prettier. No state management library; add one only if needed.
+Vue 3.5, Vue Router, vite-ssg (static site generation), Vite, TypeScript, Vitest + Vue Test Utils (jsdom), ESLint + oxlint, Prettier. No state management library; add one only if needed.
 
 ## Hosting constraints (GitHub Pages)
 - Static only. No server code, no secrets.
 - `base` in `vite.config.ts` is `/AaronWoodsPortfolio/`. Use `import.meta.env.BASE_URL` for asset paths, never absolute `/…` URLs.
-- Router uses `createWebHashHistory` so deep links work without server rewrites.
+- Static site generation: `vite-ssg` prerenders each route in `src/router/index.ts` to `dist/<route>/index.html` (`dirStyle: 'nested'`), so URLs are clean (`/about`, not `/#/about`), deep links work on Pages, and link previews/search see real HTML. Every new page must be listed in `routes`; unlisted paths 404.
+- Code runs in Node during the build. Do not touch `window`, `document` or `localStorage` at module top level or in `setup`; use `onMounted` or guard with `import.meta.env.SSR`.
 - Deployed via GitHub Actions (`.github/workflows/deploy.yml`: lint, test, build, then deploy on push to `main`). Pages source must be set to "GitHub Actions" in repo settings. Never commit `dist/`.
 
 ## Architecture
@@ -37,9 +38,9 @@ Vue 3.5, Vue Router (hash history), Vite, TypeScript, Vitest + Vue Test Utils (j
 public/                        Static files copied as-is (favicon.ico)
 index.html                     Vite entry HTML
 src/
-  main.ts                      App bootstrap (creates app, installs router)
+  main.ts                      App bootstrap (`ViteSSG` creates app + router, exports `createApp`)
   App.vue                      Root component
-  router/index.ts              Routes (hash history)
+  router/index.ts              Exported `routes` array (no router instance; vite-ssg builds it)
   views/                       One component per route (HomeView, AboutView)
   components/                  Reusable components
     __tests__/                 Unit tests, *.spec.ts, next to the code they cover
@@ -48,7 +49,7 @@ src/
   data/                        (planned) typed personal content
   styles/tokens.css            (planned) light/dark CSS variables
 env.d.ts                       Vite client types
-vite.config.ts                 Vite config (base path, `@` alias)
+vite.config.ts                 Vite config (base path, `@` alias, `ssgOptions`)
 vitest.config.ts               Vitest config (jsdom)
 eslint.config.ts, .oxlintrc.json, .prettierrc.json   Lint and format config
 tsconfig.json                  Solution file that references the three below
