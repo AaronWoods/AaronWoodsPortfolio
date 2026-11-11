@@ -26,8 +26,9 @@ Vue 3.5, Vue Router, vite-ssg (static site generation), Vite, TypeScript, Vitest
 
 ## Architecture
 - Entry: `src/main.ts`; routes in `src/router/index.ts`; pages in `src/views/`; reusable pieces in `src/components/`.
-- The scaffold's example content (`HelloWorld`, `TheWelcome`, `AboutView`, etc.) is placeholder and will be replaced.
-- Personal content lives in typed files under `src/data/` (to be created). Components render data only; never hardcode links, jobs or dates in templates.
+- It is a single-page CV/portfolio (`HomeView`) with in-page anchors (`#experience`, `#education`, `#contact`). Layout is a GitHub-README style single column; dark by default, light via `prefers-color-scheme`.
+- Personal content lives in typed files in `src/data/` (`profile.ts`, `experience.ts`, `education.ts`; types in `types.ts`). Components take it as props and render only; never hardcode links, jobs or dates in templates. Values in `[BRACKETS]` are placeholders still to be replaced with real content (search for `TODO(content)`).
+- Animations are CSS only (no library): typewriter name, staggered fade-up (`.rise`), contribution-graph ripple, pulsing current-role dot, hover lift (`.lift`), and scroll-driven reveals/timeline/progress bar behind `@supports (animation-timeline: ...)`. Any new animation must be disabled under `prefers-reduced-motion` (a global rule in `base.css` already does this) and must produce identical server and client HTML (no `Math.random`, dates or `window` at render time).
 - `<script setup lang="ts">` and Composition API only.
 - Small, single-purpose components. No new dependencies without a stated reason.
 - `@` aliases `src/`.
@@ -41,13 +42,14 @@ src/
   main.ts                      App bootstrap (`ViteSSG` creates app + router, exports `createApp`)
   App.vue                      Root component
   router/index.ts              Exported `routes` array (no router instance; vite-ssg builds it)
-  views/                       One component per route (HomeView, AboutView)
-  components/                  Reusable components
+  views/HomeView.vue           The single page; composes the section components
+  components/                  SiteHeader, ProfileHero, ContributionGraph, ReadmeCard, ExperienceTimeline, EducationSection, ContactCard
     __tests__/                 Unit tests, *.spec.ts, next to the code they cover
-    icons/                     Scaffold placeholder icons (likely to be removed)
-  assets/                      base.css, main.css (scaffold global styles), logo.svg
-  data/                        (planned) typed personal content
-  styles/tokens.css            (planned) light/dark CSS variables
+  data/                        Typed personal content (profile, experience, education) and `types.ts`
+  utils/                       Pure helpers (`contributionGraph.ts`: seeded decorative graph)
+    __tests__/
+  styles/tokens.css            Colour/spacing CSS variables (dark default, light override)
+  styles/base.css              Reset, shared classes (`.btn`, `.lift`, `.rise`, `.reveal`), reduced-motion rule
 env.d.ts                       Vite client types
 vite.config.ts                 Vite config (base path, `@` alias, `ssgOptions`)
 vitest.config.ts               Vitest config (jsdom)
@@ -58,10 +60,10 @@ tsconfig.json                  Solution file that references the three below
   tsconfig.node.json           Config files (vite, vitest, eslint)
 ```
 - Put new unit tests in a `__tests__/` folder beside the code, named `<Name>.spec.ts`.
-- Anything marked "(planned)" does not exist yet; create it when first needed rather than assuming it is there.
+- `public/favicon.ico` is still the Vue scaffold icon; replace it.
 
 ## Design principles
-- Mobile-first, responsive, light/dark via CSS variables in `src/styles/tokens.css` (to be created).
+- Mobile-first, responsive, light/dark via CSS variables in `src/styles/tokens.css`.
 - Accessible by default: semantic HTML, keyboard nav, visible focus, AA contrast, respect `prefers-reduced-motion`.
 - Fast: optimized images, lazy-load below the fold, small bundle.
 - External links get `rel="noopener noreferrer"`.
