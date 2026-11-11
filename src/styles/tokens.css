@@ -1,0 +1,56 @@
+/* Design tokens. Dark is the default; light follows the OS setting.
+   Palette is based on GitHub's Primer colours. */
+:root {
+  color-scheme: dark;
+
+  --bg: #0d1117;
+  --bg-inset: #010409;
+  --bg-subtle: #161b22;
+  --bg-hover: #21262d;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #9198a1;
+  --accent: #4493f8;
+  --accent-bg: #388bfd1a;
+  --green: #3fb950;
+  --btn-primary: #238636;
+  --btn-primary-border: #2ea043;
+  --btn-primary-text: #ffffff;
+
+  --graph-0: #161b22;
+  --graph-1: #0e4429;
+  --graph-2: #006d32;
+  --graph-3: #26a641;
+  --graph-4: #39d353;
+
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+  --radius: 6px;
+  --content-width: 960px;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+
+    --bg: #ffffff;
+    --bg-inset: #f6f8fa;
+    --bg-subtle: #f6f8fa;
+    --bg-hover: #eaeef2;
+    --border: #d1d9e0;
+    --text: #1f2328;
+    --muted: #59636e;
+    --accent: #0969da;
+    --accent-bg: #ddf4ff;
+    --green: #1a7f37;
+    --btn-primary: #1f883d;
+    --btn-primary-border: #1a7f37;
+
+    --graph-0: #eaeef2;
+    --graph-1: #aceebb;
+    --graph-2: #4ac26b;
+    --graph-3: #2da44e;
+    --graph-4: #116329;
+  }
+}
